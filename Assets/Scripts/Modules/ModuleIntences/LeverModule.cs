@@ -36,7 +36,7 @@ public class LeverModule : BaseModule
     protected override void ProcessAutoReturn()
     {
         // Volver suavemente al centro
-        currentOffset = Mathf.Lerp(currentOffset, 0f, Time.deltaTime * returnSpeed);
+        currentOffset = Mathf.Lerp(currentOffset, minPosition, Time.deltaTime * returnSpeed);
 
         // Recalcular valor normalizado
         moduleValue = Mathf.InverseLerp(minPosition, maxPosition, currentOffset) * 100f;
@@ -48,11 +48,8 @@ public class LeverModule : BaseModule
     private void ApplyLeverPosition()
     {
         Vector3 newPosition = initialPosition;
-
-        if (moveOnX)
-            newPosition.x = initialPosition.x + currentOffset;
-        else
-            newPosition.y = initialPosition.y + currentOffset;
+        
+        newPosition.x = initialPosition.x + currentOffset;
 
         transform.localPosition = newPosition;
     }
