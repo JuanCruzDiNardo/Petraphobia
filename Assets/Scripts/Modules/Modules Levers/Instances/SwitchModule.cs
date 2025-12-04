@@ -1,12 +1,11 @@
 ﻿using UnityEngine;
 
-public class OnOffModule : MonoBehaviour
+public class SwitchModule : MonoBehaviour
 {
-
     [Header("Rotation Settings")]
     public float minAngle = 0f;
     public float maxAngle = 30f;
-    public float rotateSpeed = 8f; // lo lento o rápido que hace la animación
+    public float rotateSpeed = 8f;
 
     [Header("State")]
     public bool isOn = false;
@@ -14,40 +13,117 @@ public class OnOffModule : MonoBehaviour
     private float currentAngle;
     private float targetAngle;
 
+    [Header("Energy Logic")]
+    public EnergySwitchController logicController;
+
+    [Header("LED")]
+    public Renderer ledRenderer;
+    public Material ledOnMat;      // Verde
+    public Material ledOffMat;     // Rojo
+    public Material ledOverloadMat; // Negro
+
+    private bool isInOverloadMode = false;
+
+
+    // ======================================================
+    //                   INITIALIZATION
+    // ======================================================
     private void Start()
     {
-        // Estado inicial
         currentAngle = isOn ? maxAngle : minAngle;
         targetAngle = currentAngle;
-        
-        transform.localRotation = Quaternion.Euler(currentAngle, 0f, 0f);
+        transform.localRotation = Quaternion.Euler(0f, currentAngle, 0f);
 
-        //Debug.Log("[OnOffModule] Start — Estado inicial: " + (isOn ? "ON" : "OFF"));
+        UpdateLED();
     }
 
+    private void OnEnable()
+    {
+        EnergyManager.OnOverload += EnterOverloadMode;
+        EnergyManager.OnRestored += ExitOverloadMode;
+    }
+
+    private void OnDisable()
+    {
+        EnergyManager.OnOverload -= EnterOverloadMode;
+        EnergyManager.OnRestored -= ExitOverloadMode;
+    }
+
+
+    // ======================================================
+    //              INPUT MANUAL (CLICK)
+    // ======================================================
+    private void OnMouseDown()
+    {
+        if (isInOverloadMode)
+            return;  // no se puede interactuar en sobrecarga
+
+        ManualToggle();
+    }
+
+    public void ManualToggle()
+    {
+        bool requestedState = !isOn;
+
+        logicController.SetStateFromExternal(requestedState);
+        // El controller decidirá si aprueba o no el cambio.
+    }
+
+
+    // ======================================================
+    //      MÉTODO QUE LLAMA EnergySwitchController
+    // ======================================================
+    public void SetStateExternally(bool state)
+    {
+        isOn = state;
+        targetAngle = isOn ? maxAngle : minAngle;
+        UpdateLED();
+    }
+
+
+    // ======================================================
+    //              VISUAL SMOOTH ROTATION
+    // ======================================================
     private void Update()
     {
-        // Interpolar suavemente
         if (Mathf.Abs(currentAngle - targetAngle) > 0.01f)
         {
             currentAngle = Mathf.Lerp(currentAngle, targetAngle, Time.deltaTime * rotateSpeed);
-            
-            transform.localRotation = Quaternion.Euler(currentAngle, 0f, 0f);
+            transform.localRotation = Quaternion.Euler(0f, currentAngle, 0f);
         }
     }
 
-    private void OnMouseDown()
+
+    // ======================================================
+    //                LED STATE LOGIC
+    // ======================================================
+    private void UpdateLED()
     {
-        //Debug.Log("[OnOffModule] Click detectado → Toggle()");
-        Toggle();
+        if (ledRenderer == null)
+            return;
+
+        if (isInOverloadMode)
+        {
+            ledRenderer.material = ledOverloadMat;
+            return;
+        }
+
+        ledRenderer.material = isOn ? ledOnMat : ledOffMat;
     }
 
-    public void Toggle()
+
+    // ======================================================
+    //        OVERLOAD ENTER / EXIT HANDLING
+    // ======================================================
+    private void EnterOverloadMode()
     {
-        isOn = !isOn;
+        isInOverloadMode = true;
+        ledRenderer.material = ledOverloadMat;
+    }
 
-        targetAngle = isOn ? maxAngle : minAngle;
-
-        //Debug.Log("[OnOffModule] Nuevo estado = " + (isOn ? "ON" : "OFF"));
+    private void ExitOverloadMode()
+    {
+        isInOverloadMode = false;
+        UpdateLED(); // recupera rojo si está apagado, verde si está encendido
     }
 }

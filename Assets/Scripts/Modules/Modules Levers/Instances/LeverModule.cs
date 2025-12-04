@@ -1,54 +1,78 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class LeverModule : BaseModule
 {
-    [Header("Configuraci�n de Palanca")]
-    public bool moveOnX = true;           // Si es false, se mueve sobre Y
+    [Header("Configuración de Palanca")]
+    public bool moveOnX = true;
     public float minPosition = -0.18f;
     public float maxPosition = 0.18f;
 
     private float currentOffset = 0f;
 
+    private bool isEnabled = true;
+
+    // Referencia al controlador del minijuego
+    private LeverRestoreController restoreController;
+
     protected override void Start()
     {
         base.Start();
         currentOffset = 0f;
+
+        restoreController = FindAnyObjectByType<LeverRestoreController>();
     }
+
+    // -------------------------------------------------------------------------
+
+    public void EnableLever(bool value)
+    {
+        isEnabled = value;
+    }
+
+    // -------------------------------------------------------------------------
 
     protected override void ProcessDrag()
     {
-        // Detectar eje de movimiento del mouse
+        if (!isEnabled) return;
+
         float mouseInput = Input.GetAxis(moveOnX ? "Mouse X" : "Mouse Y");
 
-        // Ajustar desplazamiento
         currentOffset += mouseInput * sensitivity * Time.deltaTime;
 
-        // Limitar
         currentOffset = Mathf.Clamp(currentOffset, minPosition, maxPosition);
 
-        // Convertir a 0�100
         moduleValue = Mathf.InverseLerp(minPosition, maxPosition, currentOffset) * 100f;
 
-        // Aplicar movimiento
         ApplyLeverPosition();
+
+        // Si llegó a 100 → registrar activación
+        if (moduleValue >= 99.9f)
+        {
+            isEnabled = false; // bloquear hasta que vuelva a cero
+            restoreController.RegisterActivation();
+        }
     }
 
     protected override void ProcessAutoReturn()
     {
-        // Volver suavemente al centro
+        // La palanca debe volver siempre, incluso si está deshabilitada
         currentOffset = Mathf.Lerp(currentOffset, minPosition, Time.deltaTime * returnSpeed);
 
-        // Recalcular valor normalizado
         moduleValue = Mathf.InverseLerp(minPosition, maxPosition, currentOffset) * 100f;
 
-        // Aplicar movimiento
         ApplyLeverPosition();
+
+        // Si ya volvió a 0 → reactivar si corresponde
+        if (!isEnabled && moduleValue <= 1f)
+        {
+            isEnabled = true;
+        }
     }
 
     private void ApplyLeverPosition()
     {
         Vector3 newPosition = initialPosition;
-        
+
         newPosition.x = initialPosition.x + currentOffset;
 
         transform.localPosition = newPosition;

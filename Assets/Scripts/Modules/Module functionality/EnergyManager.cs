@@ -107,4 +107,5 @@ public static class EnergyManager
         OnEnergyChanged?.Invoke(_currentEnergy);
         OnRestored?.Invoke();
     }
+
 }
