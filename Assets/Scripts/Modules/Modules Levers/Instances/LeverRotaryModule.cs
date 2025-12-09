@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Unity.VisualScripting;
+using UnityEngine;
 
 public class LeverRotaryModule : BaseModule
 {
@@ -11,35 +12,71 @@ public class LeverRotaryModule : BaseModule
 
     private float currentRotation;
 
+    [Header("Dependencias")]
+    public SwitchModule linkedSwitch;   // ← NUEVO: switch que habilita/deshabilita la palanca
+
     protected override void Start()
     {
         base.Start();
         currentRotation = 0f;
+    }
 
-        //Debug.Log($"[LeverRotary] START → Min:{minRotation} Max:{maxRotation} Eje: X:{rotateOnX} Y:{rotateOnY} Z:{rotateOnZ}");
+    protected override void Update()
+    {
+        base.Update();
+
+        // Cuando el switch está apagado, siempre vuelve a 0
+        if (linkedSwitch != null && !linkedSwitch.isOn)
+        {
+            ForceNeutralPosition();
+            return;
+        }
     }
 
     protected override void ProcessDrag()
     {
-        float mouseInput = Input.GetAxis("Mouse Y");
+        // ------------------------------------------------------
+        // 🚫 BLOQUEO POR SWITCH
+        // ------------------------------------------------------
+        if (linkedSwitch != null && !linkedSwitch.isOn)
+        {
+            ForceNeutralPosition();
+            return;
+        }
+        // ------------------------------------------------------
 
-        //Debug.Log($"[LeverRotary] DRAG → mouseInput:{mouseInput:F4}, currentRotation:{currentRotation:F2}");
+        float mouseInput = Input.GetAxis("Mouse Y");
 
         currentRotation += mouseInput * sensitivity * Time.deltaTime;
         currentRotation = Mathf.Clamp(currentRotation, minRotation, maxRotation);
 
-        //Debug.Log($"[LeverRotary] After Clamp → rotation:{currentRotation:F2}");
-
         moduleValue = Mathf.InverseLerp(minRotation, maxRotation, currentRotation) * 100f;
+
+        DrillManager.UpdateDrillControl(moduleValue);
 
         ApplyRotation();
     }
 
     protected override void ProcessAutoReturn()
-    {
-        //Debug.Log($"[LeverRotary] AUTO-RETURN → current:{currentRotation:F2}");
+    {        
 
+        // Si está encendido → funciona normal
         currentRotation = Mathf.Lerp(currentRotation, 0f, Time.deltaTime * returnSpeed);
+
+        DrillManager.UpdateDrillControl(moduleValue);
+
+        ApplyRotation();
+    }
+
+    // ======================================================================================
+
+    private void ForceNeutralPosition()
+    {
+        // Forzar rotación a 0
+        currentRotation = Mathf.Lerp(currentRotation, minRotation, Time.deltaTime * returnSpeed * 2f);
+
+        // Forzar valor a 0
+        moduleValue = 0f;
 
         ApplyRotation();
     }
@@ -53,7 +90,5 @@ public class LeverRotaryModule : BaseModule
         if (rotateOnZ) localEuler.z = currentRotation;
 
         transform.localEulerAngles = localEuler;
-
-        //Debug.Log($"[LeverRotary] APPLY ROTATION → {localEuler}");
     }
 }

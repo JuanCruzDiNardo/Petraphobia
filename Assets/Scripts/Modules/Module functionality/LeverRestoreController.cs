@@ -32,8 +32,8 @@ public class LeverRestoreController : MonoBehaviour
         restorationActive = true;
         currentActivations = 0;
 
-        // generar número entre 2 y 7
-        requiredActivations = Random.Range(2, 8);
+        // generar número entre 2 y 5
+        requiredActivations = Random.Range(2, 6);
 
         Debug.Log($"🔧 Se requieren {requiredActivations} activaciones de palanca para restaurar energía.");
 

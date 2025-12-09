@@ -32,7 +32,7 @@ public class SwitchModule : MonoBehaviour
     {
         currentAngle = isOn ? maxAngle : minAngle;
         targetAngle = currentAngle;
-        transform.localRotation = Quaternion.Euler(0f, currentAngle, 0f);
+        transform.localRotation = Quaternion.Euler(currentAngle, 90f, -90f);
 
         UpdateLED();
     }
@@ -89,7 +89,7 @@ public class SwitchModule : MonoBehaviour
         if (Mathf.Abs(currentAngle - targetAngle) > 0.01f)
         {
             currentAngle = Mathf.Lerp(currentAngle, targetAngle, Time.deltaTime * rotateSpeed);
-            transform.localRotation = Quaternion.Euler(0f, currentAngle, 0f);
+            transform.localRotation = Quaternion.Euler(currentAngle, 90f, -90f);
         }
     }
 

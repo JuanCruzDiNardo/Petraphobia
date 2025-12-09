@@ -87,7 +87,7 @@ public class ValveModule : MonoBehaviour
     // Aplica rotación física al objeto
     void ApplyAngle(float angle)
     {
-        transform.localRotation = Quaternion.Euler(0f, 0f, angle);
+        transform.localRotation = Quaternion.Euler(0f, -angle, 0f);
     }
 
     // Convierte ángulo (minAngle–maxAngle) → valor 0–100
@@ -103,7 +103,7 @@ public class ValveModule : MonoBehaviour
 
         float t = value01 / 100f;
         float angle = Mathf.Lerp(gaugeMinZ, gaugeMaxZ, t);
-        gaugeNeedle.localRotation = Quaternion.Euler(0f, 0f, angle);
+        gaugeNeedle.localRotation = Quaternion.Euler(0f, angle, 0f);
     }
 
     // Normalizar ángulo evita que Unity devuelva 0–360 siempre
