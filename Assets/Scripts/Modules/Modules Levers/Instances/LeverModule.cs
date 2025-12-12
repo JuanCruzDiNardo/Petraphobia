@@ -73,7 +73,7 @@ public class LeverModule : BaseModule
     {
         Vector3 newPosition = initialPosition;
 
-        newPosition.x = initialPosition.x + currentOffset;
+        newPosition.y = initialPosition.x + currentOffset;
 
         transform.localPosition = newPosition;
     }

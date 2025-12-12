@@ -9,5 +9,10 @@ public class Tester : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.R))  // R = Restore
             EnergyManager.RestoreEnergy();
+
+        if (Input.GetKeyDown(KeyCode.X))  // R = Restore
+            EnemyManager.ActivateDefense();
+
+        EnemyManager.Update();
     }
 }
