@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
@@ -14,12 +14,13 @@ public class ConsoleTextPrinter : MonoBehaviour
     public int maxLines = 12;
     public float charDelay = 0.03f;
 
+    private Queue<string> messageQueue = new Queue<string>();
     private Queue<string> lines = new Queue<string>();
-    private Coroutine typingRoutine;
+
+    private bool isProcessing = false;
 
     void Awake()
     {
-        // Singleton enforcement
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
@@ -30,7 +31,7 @@ public class ConsoleTextPrinter : MonoBehaviour
     }
 
     /* ===============================
-       PUBLIC STATIC ENTRY POINT
+       STATIC ENTRY POINT
        =============================== */
 
     public static void Log(string message)
@@ -41,37 +42,89 @@ public class ConsoleTextPrinter : MonoBehaviour
             return;
         }
 
-        Instance.PrintLine(message);
+        Instance.Enqueue(message);
     }
 
     /* ===============================
-       INTERNAL LOGIC
+       QUEUE CONTROL
        =============================== */
 
-    public void PrintLine(string line)
+    void Enqueue(string message)
     {
-        if (typingRoutine != null)
-            StopCoroutine(typingRoutine);
+        messageQueue.Enqueue(message);
 
-        typingRoutine = StartCoroutine(TypeLine(line));
+        if (!isProcessing)
+            StartCoroutine(ProcessQueue());
     }
 
-    IEnumerator TypeLine(string line)
+    IEnumerator ProcessQueue()
+    {
+        isProcessing = true;
+
+        while (messageQueue.Count > 0)
+        {
+            string msg = messageQueue.Dequeue();
+
+            bool shouldType = messageQueue.Count == 0;
+
+            if (shouldType)
+                yield return TypeLine(msg);
+            else
+                PrintInstant(msg);
+        }
+
+        isProcessing = false;
+    }
+
+    /* ===============================
+       PRINT METHODS
+       =============================== */
+
+    IEnumerator TypeLine(string message)
+    {
+        AddEmptyLine();
+
+        for (int i = 0; i < message.Length; i++)
+        {
+            ReplaceLastLine(GetLastLine() + message[i]);
+            RefreshText();
+            yield return new WaitForSeconds(charDelay);
+        }
+    }
+
+    void PrintInstant(string message)
+    {
+        AddEmptyLine();
+        ReplaceLastLine(message);
+        RefreshText();
+    }
+
+    /* ===============================
+       LINE MANAGEMENT
+       =============================== */
+
+    void AddEmptyLine()
     {
         lines.Enqueue("");
 
         if (lines.Count > maxLines)
             lines.Dequeue();
+    }
 
-        for (int i = 0; i < line.Length; i++)
-        {
-            string current = lines.Dequeue();
-            current += line[i];
-            lines.Enqueue(current);
+    string GetLastLine()
+    {
+        string[] arr = lines.ToArray();
+        return arr[arr.Length - 1];
+    }
 
-            RefreshText();
-            yield return new WaitForSeconds(charDelay);
-        }
+    void ReplaceLastLine(string newLine)
+    {
+        string[] arr = lines.ToArray();
+        arr[arr.Length - 1] = newLine;
+
+        lines.Clear();
+        foreach (var l in arr)
+            lines.Enqueue(l);
     }
 
     void RefreshText()

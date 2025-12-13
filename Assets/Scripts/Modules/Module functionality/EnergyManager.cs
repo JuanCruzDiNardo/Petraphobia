@@ -84,6 +84,7 @@ public static class EnergyManager
             return;
 
         Debug.Log("⚠ OVERLOAD DETECTED!");
+        ConsoleTextPrinter.Log("OVERLOAD DETECTED!");
 
         IsOperational = false;
         IsOverloaded = true;

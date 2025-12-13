@@ -4,6 +4,10 @@ public class Tester : MonoBehaviour
 {
     private void Update()
     {
+        EnemyManager.Update();
+
+        if (ConsoleInput.active == true) return;
+
         if (Input.GetKeyDown(KeyCode.O))  // O = Overload
             EnergyManager.ForceOverload();
 
@@ -11,8 +15,6 @@ public class Tester : MonoBehaviour
             EnergyManager.RestoreEnergy();
 
         if (Input.GetKeyDown(KeyCode.X))  // R = Restore
-            EnemyManager.ActivateDefense();
-
-        EnemyManager.Update();
+            EnemyManager.ActivateDefense();        
     }
 }

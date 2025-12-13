@@ -36,7 +36,7 @@ public class LeverRestoreController : MonoBehaviour
         requiredActivations = Random.Range(2, 6);
 
         Debug.Log($"🔧 Se requieren {requiredActivations} activaciones de palanca para restaurar energía.");
-
+        ConsoleTextPrinter.Log($"Se requieren {requiredActivations} activaciones de palanca para restaurar energia.");
         lever.EnableLever(true);
     }
 
@@ -50,11 +50,12 @@ public class LeverRestoreController : MonoBehaviour
         currentActivations++;
 
         Debug.Log($"⚡ Activación {currentActivations}/{requiredActivations}");
-
+        ConsoleTextPrinter.Log($"Activacion {currentActivations}/{requiredActivations}");
         if (currentActivations >= requiredActivations)
         {
             Debug.Log("⚡ Energía restaurada.");
-            ConsoleTextPrinter.Log("⚡ Energía restaurada.");
+            ConsoleTextPrinter.Instance.Clear();
+            ConsoleTextPrinter.Log("Energia restaurada.");
             EnergyManager.RestoreEnergy();
         }
         else

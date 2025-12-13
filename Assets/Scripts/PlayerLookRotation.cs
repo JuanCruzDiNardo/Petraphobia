@@ -21,6 +21,8 @@ public class PlayerLookRotator : MonoBehaviour
 
     private void HandleInput()
     {
+        if(ConsoleInput.active == true) return;
+
         if (isRotating) return;
 
         if (Input.GetKeyDown(KeyCode.D))

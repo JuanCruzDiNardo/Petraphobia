@@ -75,11 +75,13 @@ public class EnergySwitchController : MonoBehaviour
         {
             isOn = true;
             Debug.Log($"[{moduleType}] ENCENDIDO.");
+            ConsoleTextPrinter.Log($"[{moduleType}] ENCENDIDO.");
             ForceSync(true);
         }
         else
         {
             Debug.Log($"[{moduleType}] Energía insuficiente.");
+            ConsoleTextPrinter.Log($"[{moduleType}] Energia insuficiente.");
             ForceSync(false);
         }
     }
@@ -96,6 +98,7 @@ public class EnergySwitchController : MonoBehaviour
         isOn = false;
 
         Debug.Log($"[{moduleType}] APAGADO.");
+        ConsoleTextPrinter.Log($"[{moduleType}] APAGADO.");
         ForceSync(false);
     }
 

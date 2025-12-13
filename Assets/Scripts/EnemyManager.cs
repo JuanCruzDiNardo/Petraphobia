@@ -149,6 +149,7 @@ public static class EnemyManager
         if (DefenseActivated)
         {
             Debug.Log("Defence succesful");
+            ConsoleTextPrinter.Log("Amenaza repelida con exito");
             CurrentState = EnemyState.Wandering;
             CurrentAggressiveness *= 0.5f;
             OnAttackDefended?.Invoke();
