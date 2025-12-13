@@ -64,7 +64,7 @@ public static class EnemyManager
 
         if (checkTimer >= CheckInterval)
         {
-            Debug.Log("State Check");
+            //Debug.Log("State Check");
             checkTimer = 0;
             HandleStates();
         }

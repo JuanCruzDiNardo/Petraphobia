@@ -9,7 +9,7 @@ public class EnergySwitchController : MonoBehaviour
     {
         None,
         Motor,
-        Iluminacion,
+        Defensas,
         Presion,
         Sonar,
         Computadora,

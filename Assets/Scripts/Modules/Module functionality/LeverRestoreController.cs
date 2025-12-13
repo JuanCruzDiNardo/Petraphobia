@@ -54,6 +54,7 @@ public class LeverRestoreController : MonoBehaviour
         if (currentActivations >= requiredActivations)
         {
             Debug.Log("⚡ Energía restaurada.");
+            ConsoleTextPrinter.Log("⚡ Energía restaurada.");
             EnergyManager.RestoreEnergy();
         }
         else

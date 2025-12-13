@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Unity.VisualScripting;
+using UnityEngine;
 
 public class ValveModule : MonoBehaviour
 {
@@ -26,6 +27,10 @@ public class ValveModule : MonoBehaviour
     private bool isDragging = false;
     private Vector3 lastMousePos;
 
+    [Header("Energy Switch")]
+    public EnergySwitchController linkedSwitch;
+
+
     // Ángulo REAL actual de la válvula (no el acumulado local de Unity)
     private float currentAngle;
 
@@ -41,6 +46,9 @@ public class ValveModule : MonoBehaviour
 
     void OnMouseDown()
     {
+        if (linkedSwitch != null && !linkedSwitch.isOn)
+            return;
+        
         isDragging = true;
         lastMousePos = Input.mousePosition;
     }
@@ -54,26 +62,40 @@ public class ValveModule : MonoBehaviour
     {
         if (isDragging)
         {
-            HandleMouseRotation();
+            if (linkedSwitch != null && !linkedSwitch.isOn)
+            {
+                isDragging = false; // corta interacción
+            }
+            else
+            {
+                HandleMouseRotation();
+            }
         }
         else if (autoReturn)
         {
-            // Regresar físicamente hacia minAngle
-            currentAngle = Mathf.MoveTowards(currentAngle, minAngle, returnSpeed * Time.deltaTime);
+            currentAngle = Mathf.MoveTowards(
+                currentAngle,
+                minAngle,
+                returnSpeed * Time.deltaTime
+            );
+
             ApplyAngle(currentAngle);
             UpdateValueFromAngle();
             UpdateGauge();
         }
     }
 
+
     void HandleMouseRotation()
     {
+        if (linkedSwitch != null && !linkedSwitch.isOn)
+            return;
+
         Vector3 mousePos = Input.mousePosition;
         float delta = (mousePos.x - lastMousePos.x) - (mousePos.y - lastMousePos.y);
 
         if (invertMouse) delta = -delta;
 
-        // Convertir movimiento del mouse en rotación física
         currentAngle += delta * mouseSensitivity;
         currentAngle = Mathf.Clamp(currentAngle, minAngle, maxAngle);
 
@@ -83,6 +105,7 @@ public class ValveModule : MonoBehaviour
 
         lastMousePos = mousePos;
     }
+
 
     // Aplica rotación física al objeto
     void ApplyAngle(float angle)
