@@ -82,7 +82,7 @@ public class ConsoleTextPrinter : MonoBehaviour
 
     IEnumerator TypeLine(string message)
     {
-        AddEmptyLine();
+        EnsureLineExists();
 
         for (int i = 0; i < message.Length; i++)
         {
@@ -94,7 +94,7 @@ public class ConsoleTextPrinter : MonoBehaviour
 
     void PrintInstant(string message)
     {
-        AddEmptyLine();
+        EnsureLineExists();
         ReplaceLastLine(message);
         RefreshText();
     }
@@ -103,9 +103,10 @@ public class ConsoleTextPrinter : MonoBehaviour
        LINE MANAGEMENT
        =============================== */
 
-    void AddEmptyLine()
+    void EnsureLineExists()
     {
-        lines.Enqueue("");
+        if (lines.Count == 0)
+            lines.Enqueue("");
 
         if (lines.Count > maxLines)
             lines.Dequeue();
@@ -113,12 +114,21 @@ public class ConsoleTextPrinter : MonoBehaviour
 
     string GetLastLine()
     {
+        if (lines.Count == 0)
+            return "";
+
         string[] arr = lines.ToArray();
         return arr[arr.Length - 1];
     }
 
     void ReplaceLastLine(string newLine)
     {
+        if (lines.Count == 0)
+        {
+            lines.Enqueue(newLine);
+            return;
+        }
+
         string[] arr = lines.ToArray();
         arr[arr.Length - 1] = newLine;
 
@@ -134,7 +144,10 @@ public class ConsoleTextPrinter : MonoBehaviour
 
     public void Clear()
     {
+        StopAllCoroutines();
+        messageQueue.Clear();
         lines.Clear();
         consoleText.text = "";
+        isProcessing = false;
     }
 }

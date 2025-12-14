@@ -72,6 +72,8 @@ public class LeverRotaryModule : BaseModule
 
     private void ForceNeutralPosition()
     {
+        DrillManager.ForceStop();
+
         // Forzar rotación a 0
         currentRotation = Mathf.Lerp(currentRotation, minRotation, Time.deltaTime * returnSpeed * 2f);
 

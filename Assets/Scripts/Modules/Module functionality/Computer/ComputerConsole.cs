@@ -69,6 +69,7 @@ public class ComputerConsole : MonoBehaviour
 
     private void Start()
     {
+        EnergyManager.OnOverload += PowerOff;
         StartCoroutine(LockRoutine());
     }
 
@@ -114,7 +115,7 @@ public class ComputerConsole : MonoBehaviour
         }
 
         if (countdown <= 0f && CurrentState == State.Locked)
-            PowerOff();
+            EnergyManager.ForceOverload();
     }
 
     /* ===============================
@@ -186,7 +187,7 @@ public class ComputerConsole : MonoBehaviour
 
         ConsoleTextPrinter.Instance.Clear();
         ConsoleTextPrinter.Log("ERROR DE VALIDACION: FORZANDO REINICIO...");        
-        EnergyManager.ForceOverload();
+        //EnergyManager.ForceOverload();
     }
 
     public void OnPowerRestored()
