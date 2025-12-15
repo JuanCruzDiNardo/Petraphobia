@@ -18,7 +18,7 @@ public static class EnemyManager
     // ---------------------------------------------------------
     // AGRESIVIDAD
     // ---------------------------------------------------------
-    public static float BaseAggressiveness = 0.1f;
+    public static float BaseAggressiveness = 0.05f;
     public static float CurrentAggressiveness = 0.1f;
     public static float AggressivenessIncreaseRate = 0.01f;
     public static float MaxAggressiveness = 1f;
@@ -26,7 +26,7 @@ public static class EnemyManager
     // ---------------------------------------------------------
     // TIMERS
     // ---------------------------------------------------------
-    public static float CheckInterval = 3f;
+    public static float CheckInterval = 5f;
     private static float checkTimer;
 
     public static float AttackTimeLimit = 20f;
@@ -37,8 +37,8 @@ public static class EnemyManager
     // ---------------------------------------------------------
     // PROBABILIDADES
     // ---------------------------------------------------------
-    public static float StalkingChanceMultiplier = 1.5f;
-    public static float AttackChanceMultiplier = 2f;
+    public static float StalkingChanceMultiplier = 1.2f;
+    public static float AttackChanceMultiplier = 1.5f;
 
     // ---------------------------------------------------------
     // EVENTOS
@@ -149,7 +149,9 @@ public static class EnemyManager
         if (DefenseActivated)
         {
             Debug.Log("Defence succesful");
-            ConsoleTextPrinter.Log("Amenaza repelida con exito");
+            ConsoleTextPrinter.Instance.Clear();
+            ConsoleTextPrinter.Log("AMENAZA REPELIDA CON EXITO... SOBRECARGA DE ENERGIA...");
+            //ConsoleTextPrinter.Log("Amenaza repelida con exito");
             CurrentState = EnemyState.Wandering;
             CurrentAggressiveness *= 0.5f;
             OnAttackDefended?.Invoke();

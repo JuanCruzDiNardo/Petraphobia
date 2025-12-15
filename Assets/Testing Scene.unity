@@ -2806,12 +2806,14 @@ MonoBehaviour:
   mouseSensitivity: 0.3
   invertMouse: 0
   autoReturn: 1
-  returnSpeed: 15
+  returnSpeed: 5
   gaugeNeedle: {fileID: 1067854462}
   gaugeMinZ: 90
   gaugeMaxZ: -90
   value01: 100
   linkedSwitch: {fileID: 312015914}
+  zeroValueOverloadTime: 10
+  restoreValue: 30
 --- !u!65 &772973588
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5992,7 +5994,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LeverModule
   sensitivity: 1
   autoReturn: 1
-  returnSpeed: 2
+  returnSpeed: 3
   moduleValue: 0
   indicatorTransform: {fileID: 0}
   indicatorMin: 0

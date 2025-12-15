@@ -65,6 +65,8 @@ public class ConsoleTextPrinter : MonoBehaviour
         {
             string msg = messageQueue.Dequeue();
 
+            StartNewLine();
+
             bool shouldType = messageQueue.Count == 0;
 
             if (shouldType)
@@ -107,10 +109,8 @@ public class ConsoleTextPrinter : MonoBehaviour
     {
         if (lines.Count == 0)
             lines.Enqueue("");
-
-        if (lines.Count > maxLines)
-            lines.Dequeue();
     }
+
 
     string GetLastLine()
     {
@@ -150,4 +150,13 @@ public class ConsoleTextPrinter : MonoBehaviour
         consoleText.text = "";
         isProcessing = false;
     }
+
+    void StartNewLine()
+    {
+        lines.Enqueue("");
+
+        if (lines.Count > maxLines)
+            lines.Dequeue();
+    }
+
 }

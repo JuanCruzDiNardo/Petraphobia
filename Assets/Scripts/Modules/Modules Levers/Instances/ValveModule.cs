@@ -1,19 +1,18 @@
-﻿using Unity.VisualScripting;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class ValveModule : MonoBehaviour
 {
     [Header("Valve Rotation Limits (degrees)")]
-    public float minAngle = 0f;           // Ej: 0 grados
-    public float maxAngle = 1080f;        // Ej: 3 vueltas completas = 1080 grados
+    public float minAngle = 0f;
+    public float maxAngle = 1080f;
 
     [Header("Mouse rotation control")]
-    public float mouseSensitivity = 0.3f; // Ajusta la fuerza del movimiento del mouse
-    public bool invertMouse = false;      // Invierte el sentido
+    public float mouseSensitivity = 0.3f;
+    public bool invertMouse = false;
 
     [Header("Auto return")]
     public bool autoReturn = false;
-    public float returnSpeed = 180f;      // Grados por segundo
+    public float returnSpeed = 180f;
 
     [Header("Gauge Indicator")]
     public Transform gaugeNeedle;
@@ -22,33 +21,32 @@ public class ValveModule : MonoBehaviour
 
     [Header("State")]
     [Range(0f, 100f)]
-    public float value01 = 0f;            // Se genera automáticamente por el ángulo
-
-    private bool isDragging = false;
-    private Vector3 lastMousePos;
+    public float value01 = 80f; // 🔹 valor inicial deseado
 
     [Header("Energy Switch")]
     public EnergySwitchController linkedSwitch;
 
-
-    // Ángulo REAL actual de la válvula (no el acumulado local de Unity)
+    private bool isDragging = false;
+    private Vector3 lastMousePos;
     private float currentAngle;
 
+    // ---------------------------------------------------------
     void Start()
     {
-        // Leer rotación inicial real en Z
-        currentAngle = NormalizeAngle(transform.localEulerAngles.z);
-        currentAngle = Mathf.Clamp(currentAngle, minAngle, maxAngle);
+        // 🔹 Inicializar en 80%
+        currentAngle = Mathf.Lerp(minAngle, maxAngle, value01 / 100f);
+
         ApplyAngle(currentAngle);
         UpdateValueFromAngle();
         UpdateGauge();
     }
 
+    // ---------------------------------------------------------
     void OnMouseDown()
     {
         if (linkedSwitch != null && !linkedSwitch.isOn)
             return;
-        
+
         isDragging = true;
         lastMousePos = Input.mousePosition;
     }
@@ -58,13 +56,14 @@ public class ValveModule : MonoBehaviour
         isDragging = false;
     }
 
+    // ---------------------------------------------------------
     void Update()
     {
         if (isDragging)
         {
             if (linkedSwitch != null && !linkedSwitch.isOn)
             {
-                isDragging = false; // corta interacción
+                isDragging = false;
             }
             else
             {
@@ -85,12 +84,9 @@ public class ValveModule : MonoBehaviour
         }
     }
 
-
+    // ---------------------------------------------------------
     void HandleMouseRotation()
     {
-        if (linkedSwitch != null && !linkedSwitch.isOn)
-            return;
-
         Vector3 mousePos = Input.mousePosition;
         float delta = (mousePos.x - lastMousePos.x) - (mousePos.y - lastMousePos.y);
 
@@ -106,20 +102,17 @@ public class ValveModule : MonoBehaviour
         lastMousePos = mousePos;
     }
 
-
-    // Aplica rotación física al objeto
+    // ---------------------------------------------------------
     void ApplyAngle(float angle)
     {
         transform.localRotation = Quaternion.Euler(0f, -angle, 0f);
     }
 
-    // Convierte ángulo (minAngle–maxAngle) → valor 0–100
     void UpdateValueFromAngle()
     {
         value01 = Mathf.InverseLerp(minAngle, maxAngle, currentAngle) * 100f;
     }
 
-    // Aplica rotación al indicador en base a value01
     void UpdateGauge()
     {
         if (gaugeNeedle == null) return;
@@ -127,12 +120,5 @@ public class ValveModule : MonoBehaviour
         float t = value01 / 100f;
         float angle = Mathf.Lerp(gaugeMinZ, gaugeMaxZ, t);
         gaugeNeedle.localRotation = Quaternion.Euler(0f, angle, 0f);
-    }
-
-    // Normalizar ángulo evita que Unity devuelva 0–360 siempre
-    float NormalizeAngle(float angle)
-    {
-        if (angle > 180f) angle -= 360f;
-        return angle;
     }
 }

@@ -115,7 +115,11 @@ public class ComputerConsole : MonoBehaviour
         }
 
         if (countdown <= 0f && CurrentState == State.Locked)
+        {
+            ConsoleTextPrinter.Instance.Clear();
+            ConsoleTextPrinter.Log("ERROR DE VALIDACION: FORZANDO REINICIO...");
             EnergyManager.ForceOverload();
+        }            
     }
 
     /* ===============================
@@ -184,10 +188,8 @@ public class ComputerConsole : MonoBehaviour
 
         consoleInput.EnableInput(false);
         timerText.text = "";
-
-        ConsoleTextPrinter.Instance.Clear();
-        ConsoleTextPrinter.Log("ERROR DE VALIDACION: FORZANDO REINICIO...");        
-        //EnergyManager.ForceOverload();
+               
+        EnergyManager.ForceOverload();
     }
 
     public void OnPowerRestored()
