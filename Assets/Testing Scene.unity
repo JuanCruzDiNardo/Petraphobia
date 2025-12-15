@@ -530,6 +530,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ConsoleKeyboardInteractable
   computer: {fileID: 743904679}
+  linkedSwitch: {fileID: 1785914912}
 --- !u!65 &32675054
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2076,7 +2077,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColor: {r: 0, g: 0.6784314, b: 0.101960786, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -2099,7 +2100,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 2
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
   m_textAlignment: 65535
@@ -2269,8 +2270,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4279938304
+  m_fontColor: {r: 0, g: 0.6784314, b: 0.101960786, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -2287,13 +2288,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 0.02
-  m_fontSizeBase: 0.02
+  m_fontSize: 0.025
+  m_fontSizeBase: 0.025
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 2
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
   m_textAlignment: 65535
@@ -2806,14 +2807,12 @@ MonoBehaviour:
   mouseSensitivity: 0.3
   invertMouse: 0
   autoReturn: 1
-  returnSpeed: 5
+  returnSpeed: 9
   gaugeNeedle: {fileID: 1067854462}
   gaugeMinZ: 90
   gaugeMaxZ: -90
   value01: 100
   linkedSwitch: {fileID: 312015914}
-  zeroValueOverloadTime: 10
-  restoreValue: 30
 --- !u!65 &772973588
 BoxCollider:
   m_ObjectHideFlags: 0

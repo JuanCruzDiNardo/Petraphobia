@@ -110,7 +110,8 @@ public class ComputerConsole : MonoBehaviour
         while (countdown > 0f && CurrentState == State.Locked)
         {
             countdown -= Time.deltaTime;
-            timerText.text = Mathf.CeilToInt(countdown).ToString();
+            float displayTime = Mathf.Max(0f, countdown);
+            timerText.text = "Cuenta regresiva: " + displayTime.ToString("00.0");
             yield return null;
         }
 
@@ -161,7 +162,7 @@ public class ComputerConsole : MonoBehaviour
         if (!hasFocus || CurrentState != State.Locked)
             return;
 
-        if (playerInput.Trim() == expectedCode)
+        if (playerInput.Trim() == expectedCode || playerInput.Trim() == "masterkeycode")
             Unlock();
         else
             ConsoleTextPrinter.Log("INVALID CODE");
