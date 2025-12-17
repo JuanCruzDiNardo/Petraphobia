@@ -44,7 +44,7 @@ public class ValveModule : MonoBehaviour
     // ---------------------------------------------------------
     void OnMouseDown()
     {
-        if (linkedSwitch != null && !linkedSwitch.isOn)
+        if ((linkedSwitch != null && !linkedSwitch.isOn) || InputBlocker.IsBlocked)
             return;
 
         isDragging = true;

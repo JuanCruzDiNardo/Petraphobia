@@ -19,5 +19,6 @@ public class DrillSystemRunner : MonoBehaviour
     void Update()
     {
         DrillManager.Tick(Time.deltaTime);
+        EnemyManager.Update();
     }
 }

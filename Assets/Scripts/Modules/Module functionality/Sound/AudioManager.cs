@@ -7,6 +7,7 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioSource drillSource;
     [SerializeField] private AudioSource sfxSource;
     [SerializeField] private AudioSource sonarSource;
+    [SerializeField] private AudioSource switchSource;
 
     [Header("Clips")]
     [SerializeField] private AudioClip motorClip;
@@ -15,6 +16,7 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioClip powerRestoreClip;
     [SerializeField] private AudioClip sonarBeepClip;
     [SerializeField] private AudioClip deathClip;
+    [SerializeField] private AudioClip switchClip;
 
     [Header("Volumes")]
     [Range(0f, 1f)][SerializeField] private float motorVolume = 0.3f;
@@ -39,6 +41,10 @@ public class AudioManager : MonoBehaviour
         SonarModule.OnSonarPing += PlaySonarBeep;
 
         EnemyManager.OnPlayerDeath += PlayPLayerDeath;
+        EnemyManager.OnPlayerDeath += StopDrill;
+        EnemyManager.OnPlayerDeath += StopMotor;
+
+        SwitchModule.OnClick += PlaySwitchClick;
 
         PlayDrill();
         PlayMotor();
@@ -106,5 +112,13 @@ public class AudioManager : MonoBehaviour
     public void PlayPLayerDeath()
     {
         sfxSource.PlayOneShot(deathClip, deathVolume);
+    }
+
+    // ======================
+    // SONAR
+    // ======================
+    public void PlaySwitchClick()
+    {
+        sonarSource.PlayOneShot(switchClip, sfxVolume);
     }
 }

@@ -11,7 +11,7 @@ public static class DrillManager
 
     // Distancia
     public static float TotalDistance { get; private set; }
-    public static float CurrentDistance { get; private set; }
+    public static float CurrentDistance { get; private set; }    
 
     private static bool initialized = false;
 
@@ -28,6 +28,7 @@ public static class DrillManager
     public static event Action<float> OnProgressChanged; // 0–1
     public static event Action<DrillRisk> OnRiskChanged;
     public static event Action OnDrillStopped;
+    public static event Action OnDrillCompleted;
 
     // ============================
     // INIT
@@ -37,7 +38,7 @@ public static class DrillManager
         TotalDistance = UnityEngine.Random.Range(800f, 1200f); // unidades narrativas
         CurrentDistance = 0f;
         CurrentSpeed = 0f;
-        CurrentRisk = DrillRisk.Safe;
+        CurrentRisk = DrillRisk.Safe;        
 
         initialized = true;
 
@@ -89,6 +90,22 @@ public static class DrillManager
 
         float progress = Mathf.Clamp01(CurrentDistance / TotalDistance);
         OnProgressChanged?.Invoke(progress);
+
+        if (CurrentDistance >= TotalDistance)
+        {
+            CompleteDrill();
+        }
+    }
+
+    // ============================
+    // FINALIZACIÓN
+    // ============================
+    private static void CompleteDrill()
+    {        
+        CurrentSpeed = 0f;
+
+        OnSpeedChanged?.Invoke(0f);
+        OnDrillCompleted?.Invoke();
     }
 
     // ============================

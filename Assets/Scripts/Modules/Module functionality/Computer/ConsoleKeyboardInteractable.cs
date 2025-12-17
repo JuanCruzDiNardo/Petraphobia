@@ -10,7 +10,7 @@ public class ConsoleKeyboardInteractable : MonoBehaviour
 
     void OnMouseDown()
     {
-        if (linkedSwitch != null && !linkedSwitch.isOn)
+        if (linkedSwitch != null && !linkedSwitch.isOn || InputBlocker.IsBlocked)
             return;
 
         Debug.Log("keyboard press");

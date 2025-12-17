@@ -40,7 +40,7 @@ public class ManualCoverInteraction : MonoBehaviour
 
     void OnMouseDown()
     {
-        if(ManualManager.Instance != null)
+        if(ManualManager.Instance != null && !InputBlocker.IsBlocked)
             ManualManager.Instance.OpenManual();
     }
 

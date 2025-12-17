@@ -27,6 +27,8 @@ public class SonarModule : MonoBehaviour
     {
         if (sonarLight != null)
             sonarLight.intensity = baseIntensity;
+
+        EnemyManager.OnPlayerDeath += StopSonar;
     }
 
     private void Update()

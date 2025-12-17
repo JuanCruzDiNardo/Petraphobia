@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class SwitchModule : MonoBehaviour
 {
@@ -21,6 +22,8 @@ public class SwitchModule : MonoBehaviour
     public Material ledOnMat;      // Verde
     public Material ledOffMat;     // Rojo
     public Material ledOverloadMat; // Negro
+
+    public static event Action OnClick;
 
     private bool isInOverloadMode = false;
 
@@ -55,9 +58,10 @@ public class SwitchModule : MonoBehaviour
     // ======================================================
     private void OnMouseDown()
     {
-        if (isInOverloadMode)
+        if (isInOverloadMode || InputBlocker.IsBlocked)
             return;  // no se puede interactuar en sobrecarga
 
+        OnClick?.Invoke();
         ManualToggle();
     }
 

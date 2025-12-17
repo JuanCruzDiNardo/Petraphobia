@@ -22,7 +22,7 @@ public class DefenseButton : MonoBehaviour
 
     private void OnMouseDown()
     {
-        if (pressed || !linkedSwitch.isOn)
+        if (pressed || !linkedSwitch.isOn || InputBlocker.IsBlocked)
             return;
 
         pressed = true;

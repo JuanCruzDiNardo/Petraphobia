@@ -21,7 +21,7 @@ public static class EnemyManager
     public static float BaseAggressiveness = 0.01f;
     public static float CurrentAggressiveness = 0.1f;
     public static float AggressivenessIncreaseRate = 0.003f;
-    public static float MaxAggressiveness = 1f;
+    public static float MaxAggressiveness = 0.7f;
 
     // ---------------------------------------------------------
     // TIMERS
@@ -125,7 +125,7 @@ public static class EnemyManager
             ConsoleTextPrinter.Log("ACCION OSTIL INMINENTE DETECTADA... ACTIVE LA DESCARGA PARA DEFENDERSE...");
             StartAttack();
         }
-        else if (r > 0.9f)
+        else if (r > 0.8f)
         {
             Debug.Log("return to wandering State");
             ConsoleTextPrinter.Log("CREATURA OSTIL ELUDIDA EXITOSAMENTE... RETOME LAS LABORES ABITUALES");
@@ -167,6 +167,7 @@ public static class EnemyManager
         {
             Time.timeScale = 0f;
             Debug.Log("Defence failure");
+            CurrentState = EnemyState.Wandering;
             OnPlayerDeath?.Invoke();
         }
 

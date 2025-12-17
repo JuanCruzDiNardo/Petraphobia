@@ -2,9 +2,11 @@ using UnityEngine;
 
 public class Tester : MonoBehaviour
 {
+    public bool testMode = true;
+
     private void Update()
-    {
-        EnemyManager.Update();
+    {        
+        if (!testMode) return;
 
         if (ConsoleInput.active == true) return;
 
