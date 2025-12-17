@@ -14,7 +14,10 @@ public class Tester : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R))  // R = Restore
             EnergyManager.RestoreEnergy();
 
-        if (Input.GetKeyDown(KeyCode.X))  // R = Restore
-            EnemyManager.ActivateDefense();        
+        if (Input.GetKeyDown(KeyCode.X)) 
+            EnemyManager.ActivateDefense();   
+        
+        if (Input.GetKeyDown(KeyCode.F))
+            EnemyManager.StartAttack();
     }
 }

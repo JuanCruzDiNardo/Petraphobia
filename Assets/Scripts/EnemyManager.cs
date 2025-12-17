@@ -43,9 +43,10 @@ public static class EnemyManager
     // ---------------------------------------------------------
     // EVENTOS
     // ---------------------------------------------------------
+    public static event Action OnWandering;
     public static event Action OnStalking;
     public static event Action OnAttack;
-    public static event Action OnAttackFailed;
+    public static event Action OnPlayerDeath;
     public static event Action OnAttackDefended;   
 
     // ---------------------------------------------------------
@@ -107,7 +108,8 @@ public static class EnemyManager
         if (UnityEngine.Random.value < chance)
         {
             CurrentState = EnemyState.Stalking;
-            Debug.Log("Change to Stalking State");
+            Debug.Log("Change to Stalking State"); 
+            ConsoleTextPrinter.Log("CRATURA OSTIL IDENTIFICADA EN LAS PROXIMIDADES....");
             OnStalking?.Invoke();
         }
     }
@@ -120,11 +122,14 @@ public static class EnemyManager
         if (r < attackChance)
         {
             Debug.Log("Change to Attack State");
+            ConsoleTextPrinter.Log("ACCION OSTIL INMINENTE DETECTADA... ACTIVE LA DESCARGA PARA DEFENDERSE...");
             StartAttack();
         }
         else if (r > 0.9f)
         {
             Debug.Log("return to wandering State");
+            ConsoleTextPrinter.Log("CREATURA OSTIL ELUDIDA EXITOSAMENTE... RETOME LAS LABORES ABITUALES");
+            OnWandering?.Invoke();
             CurrentState = EnemyState.Wandering;
         }
     }
@@ -132,12 +137,11 @@ public static class EnemyManager
     // ---------------------------------------------------------
     // ATAQUE
     // ---------------------------------------------------------
-    private static void StartAttack()
+    public static void StartAttack()
     {
         CurrentState = EnemyState.Attacking;
         attackTimer = 0f;
-        DefenseActivated = false;
-
+        DefenseActivated = false;        
         OnAttack?.Invoke();
     }
 
@@ -161,9 +165,12 @@ public static class EnemyManager
         // Jugador no reaccionó
         if (attackTimer >= AttackTimeLimit)
         {
+            Time.timeScale = 0f;
             Debug.Log("Defence failure");
-            OnAttackFailed?.Invoke();
+            OnPlayerDeath?.Invoke();
         }
+
+        Debug.Log("atacking in " + attackTimer.ToString() + "s / " + AttackTimeLimit + "s.");
     }
 
     // ---------------------------------------------------------
@@ -171,6 +178,10 @@ public static class EnemyManager
     // ---------------------------------------------------------
     public static void ActivateDefense()
     {
-        DefenseActivated = true;
+        if (CurrentState == EnemyState.Attacking)
+            DefenseActivated = true;
+        else
+            EnergyManager.ForceOverload();
+
     }
 }

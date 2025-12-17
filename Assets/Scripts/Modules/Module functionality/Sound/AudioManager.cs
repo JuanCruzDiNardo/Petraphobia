@@ -14,11 +14,13 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioClip overloadClip;
     [SerializeField] private AudioClip powerRestoreClip;
     [SerializeField] private AudioClip sonarBeepClip;
+    [SerializeField] private AudioClip deathClip;
 
     [Header("Volumes")]
     [Range(0f, 1f)][SerializeField] private float motorVolume = 0.3f;
     [Range(0f, 1f)][SerializeField] private float drillVolume = 0.25f;
     [Range(0f, 1f)][SerializeField] private float sfxVolume = 0.8f;
+    [Range(0f, 1f)][SerializeField] private float deathVolume = 0.2f;
     [Range(0f, 1f)][SerializeField] private float sonarVolume = 0.6f;
 
     private void Awake()
@@ -33,6 +35,13 @@ public class AudioManager : MonoBehaviour
         EnergyManager.OnRestored += PlayDrill;
         EnergyManager.OnRestored += PlayMotor;
         EnergyManager.OnRestored += PlayEnergyRestored;
+
+        SonarModule.OnSonarPing += PlaySonarBeep;
+
+        EnemyManager.OnPlayerDeath += PlayPLayerDeath;
+
+        PlayDrill();
+        PlayMotor();
     }
 
     private void SetupLoopSource(AudioSource source, AudioClip clip, float volume)
@@ -92,5 +101,10 @@ public class AudioManager : MonoBehaviour
     public void PlaySonarBeep()
     {
         sonarSource.PlayOneShot(sonarBeepClip, sonarVolume);
+    }
+
+    public void PlayPLayerDeath()
+    {
+        sfxSource.PlayOneShot(deathClip, deathVolume);
     }
 }
